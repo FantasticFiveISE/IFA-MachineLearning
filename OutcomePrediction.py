@@ -3,7 +3,7 @@ import pandas as pd
 import numpy as np
 from sklearn import metrics, svm
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.model_selection import KFold, train_test_split
+from sklearn.model_selection import KFold
 
 
 # clean nans
@@ -151,8 +151,8 @@ matches_data_2008_2015 = pd.read_sql("SELECT match_api_id, season, [date], home_
 matches_data_2016 = clean_nan(matches_data_2016)
 matches_data_2008_2015 = clean_nan(matches_data_2008_2015)
 
-matches_data_2008_2015 = matches_data_2008_2015.tail(100)
-matches_data_2016 = matches_data_2016.tail(100)
+# matches_data_2008_2015 = matches_data_2008_2015.tail(100)
+# matches_data_2016 = matches_data_2016.tail(100)
 
 # text_file = open("Output1.txt", "w")
 # text_file.write(matches_data.to_string())
@@ -171,15 +171,16 @@ print(4)
 matches_data_2008_2015 = add_winner_label(matches_data_2008_2015)
 
 print(5)
-#print(matches_data_2008_2015.to_string())
+matches_data_2008_2015
 
 x_train = matches_data_2008_2015[['home_player_1', 'home_player_2',
-                            'home_player_3', 'home_player_4', 'home_player_5', 'home_player_6', 'home_player_7',
-                            'home_player_8', 'home_player_9', 'home_player_10', 'home_player_11', 'away_player_1',
-                            'away_player_2', 'away_player_3', 'away_player_4', 'away_player_5', 'away_player_6',
-                            'away_player_7', 'away_player_8', 'away_player_9', 'away_player_10', 'away_player_11',
-                            'B365H', 'B365D', 'B365A', 'BWH', 'BWD', 'BWA', 'IWH', 'IWD', 'IWA', 'LBH', 'LBD', 'LBA',
-                            'PSH', 'PSD', 'PSA', 'WHH', 'WHD', 'WHA', 'VCH', 'VCD', 'VCA']]
+                                  'home_player_3', 'home_player_4', 'home_player_5', 'home_player_6', 'home_player_7',
+                                  'home_player_8', 'home_player_9', 'home_player_10', 'home_player_11', 'away_player_1',
+                                  'away_player_2', 'away_player_3', 'away_player_4', 'away_player_5', 'away_player_6',
+                                  'away_player_7', 'away_player_8', 'away_player_9', 'away_player_10', 'away_player_11',
+                                  'B365H', 'B365D', 'B365A', 'BWH', 'BWD', 'BWA', 'IWH', 'IWD', 'IWA', 'LBH', 'LBD',
+                                  'LBA',
+                                  'PSH', 'PSD', 'PSA', 'WHH', 'WHD', 'WHA', 'VCH', 'VCD', 'VCA']]
 
 y_train = matches_data_2008_2015['winner_id_label']
 
@@ -194,8 +195,9 @@ x_test = matches_data_2016[['home_player_1', 'home_player_2',
 y_test = matches_data_2016['winner_id_label']
 
 clf = svm.SVC(kernel='linear', C=1).fit(x_train, y_train)
-clf.score(x_test, y_test)
+print(clf.score(x_test, y_test))
 
+clf = RandomForestClassifier(max_depth=2, random_state=0).fit(x_train, y_train)
 print(clf.score(x_test, y_test))
 
 #
