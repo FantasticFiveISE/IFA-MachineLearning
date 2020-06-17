@@ -1,4 +1,4 @@
 # IFA-MachineLearning
-Machine Learning – Classification and regression
+Machine Learning – classification and prediction
 
 Written on Python 3.8.3
