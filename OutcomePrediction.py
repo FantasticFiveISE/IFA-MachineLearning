@@ -3,7 +3,7 @@ import pandas as pd
 import numpy as np
 from sklearn import metrics
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.model_selection import KFold
+from sklearn.model_selection import KFold, train_test_split
 
 
 def add_winner_label(matches):
@@ -97,8 +97,44 @@ matches_data = pd.read_sql("SELECT match_api_id, season, [date], home_team_api_i
                            "WHH, WHD, WHA, SJH, SJD, SJA, VCH, VCD, VCA, GBH, GBD, GBA, BSH, BSD, BSA "
                            "FROM Match;", conn)
 
+# clean nans
+matches_data['B365H'].fillna(matches_data['B365H'].mean(), inplace=True)
+matches_data['B365D'].fillna(matches_data['B365D'].mean(), inplace=True)
+matches_data['B365A'].fillna(matches_data['B365A'].mean(), inplace=True)
+matches_data['BWH'].fillna(matches_data['BWH'].mean(), inplace=True)
+matches_data['BWD'].fillna(matches_data['BWD'].mean(), inplace=True)
+matches_data['BWA'].fillna(matches_data['BWA'].mean(), inplace=True)
+matches_data['IWH'].fillna(matches_data['IWH'].mean(), inplace=True)
+matches_data['IWD'].fillna(matches_data['IWD'].mean(), inplace=True)
+matches_data['IWA'].fillna(matches_data['IWA'].mean(), inplace=True)
+matches_data['LBH'].fillna(matches_data['LBH'].mean(), inplace=True)
+matches_data['LBD'].fillna(matches_data['LBD'].mean(), inplace=True)
+matches_data['LBA'].fillna(matches_data['LBA'].mean(), inplace=True)
+matches_data['PSH'].fillna(matches_data['PSH'].mean(), inplace=True)
+matches_data['PSD'].fillna(matches_data['PSD'].mean(), inplace=True)
+matches_data['PSA'].fillna(matches_data['PSA'].mean(), inplace=True)
+matches_data['WHH'].fillna(matches_data['WHH'].mean(), inplace=True)
+matches_data['WHD'].fillna(matches_data['WHD'].mean(), inplace=True)
+matches_data['WHA'].fillna(matches_data['WHA'].mean(), inplace=True)
+matches_data['SJH'].fillna(matches_data['SJH'].mean(), inplace=True)
+matches_data['SJD'].fillna(matches_data['SJD'].mean(), inplace=True)
+matches_data['SJA'].fillna(matches_data['SJA'].mean(), inplace=True)
+matches_data['VCH'].fillna(matches_data['VCH'].mean(), inplace=True)
+matches_data['VCD'].fillna(matches_data['VCD'].mean(), inplace=True)
+matches_data['VCA'].fillna(matches_data['VCA'].mean(), inplace=True)
+matches_data['GBH'].fillna(matches_data['GBH'].mean(), inplace=True)
+matches_data['GBD'].fillna(matches_data['GBD'].mean(), inplace=True)
+matches_data['GBA'].fillna(matches_data['GBA'].mean(), inplace=True)
+matches_data['BSH'].fillna(matches_data['BSH'].mean(), inplace=True)
+matches_data['BSD'].fillna(matches_data['BSD'].mean(), inplace=True)
+matches_data['BSA'].fillna(matches_data['BSA'].mean(), inplace=True)
+
 matches_data.dropna(inplace=True)
-matches_data = matches_data.tail(15)
+# matches_data = matches_data.tail(15)
+
+# text_file = open("Output1.txt", "w")
+# text_file.write(matches_data.to_string())
+# text_file.close()
 
 # get overall rating instead of players ids
 matches_data = get_player_overall_rating(matches_data, players_stats_data)
@@ -107,10 +143,24 @@ matches_data = add_winner_label(matches_data)
 
 print(matches_data.to_string())
 
+# X = matches_data[['home_player_1', 'home_player_2',
+#                   'home_player_3', 'home_player_4', 'home_player_5', 'home_player_6', 'home_player_7',
+#                   'home_player_8', 'home_player_9', 'home_player_10', 'home_player_11', 'away_player_1',
+#                   'away_player_2', 'away_player_3', 'away_player_4', 'away_player_5', 'away_player_6',
+#                   'away_player_7', 'away_player_8', 'away_player_9', 'away_player_10', 'away_player_11',
+#                   'B365H', 'B365D', 'B365A', 'BWH', 'BWD', 'BWA', 'IWH', 'IWD', 'IWA', 'LBH', 'LBD', 'LBA', 'PSH',
+#                   'PSD',
+#                   'PSA',
+#                   'WHH', 'WHD', 'WHA', 'SJH', 'SJD', 'SJA', 'VCH', 'VCD', 'VCA', 'GBH', 'GBD', 'GBA', 'BSH', 'BSD',
+#                   'BSA']]
+# y = matches_data['winner_id_label']
+#
+# X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.1, random_state=42)
+
 # Random Forest Algorithm
 outcome_var = "winner_id_label"
 raw_model = RandomForestClassifier(n_estimators=100)
-predictor_var = ['away_team_goal', 'home_player_1', 'home_player_2',
+predictor_var = ['home_player_1', 'home_player_2',
                  'home_player_3', 'home_player_4', 'home_player_5', 'home_player_6', 'home_player_7',
                  'home_player_8', 'home_player_9', 'home_player_10', 'home_player_11', 'away_player_1',
                  'away_player_2', 'away_player_3', 'away_player_4', 'away_player_5', 'away_player_6',
