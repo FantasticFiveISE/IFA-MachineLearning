@@ -16,11 +16,11 @@ def add_winner_label(matches):
         away_goals = row['away_team_goal']
 
         if home_goals > away_goals:
-            labels.append(row['home_team_api_id'])
+            labels.append(1)
         elif home_goals < away_goals:
-            labels.append(row['away_team_api_id'])
-        else:
             labels.append(-1)
+        else:
+            labels.append(0)
 
     # create new column in matches df
     matches_data['winner_id_label'] = labels
@@ -87,7 +87,7 @@ conn = sqlite3.connect(database)
 players_data = pd.read_sql("SELECT * FROM Player;", conn)
 players_stats_data = pd.read_sql("SELECT * FROM Player_Attributes;", conn)
 teams_data = pd.read_sql("SELECT * FROM Team;", conn)
-matches_data = pd.read_sql("SELECT match_api_id, [date], home_team_api_id,"
+matches_data = pd.read_sql("SELECT match_api_id, season, [date], home_team_api_id,"
                            "away_team_api_id, home_team_goal, away_team_goal, home_player_1, home_player_2,"
                            "home_player_3, home_player_4, home_player_5, home_player_6, home_player_7,"
                            "home_player_8, home_player_9, home_player_10, home_player_11, away_player_1,"
