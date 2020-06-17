@@ -26,18 +26,18 @@ def clean_nan(data):
     data['WHH'].fillna(data['WHH'].mean(), inplace=True)
     data['WHD'].fillna(data['WHD'].mean(), inplace=True)
     data['WHA'].fillna(data['WHA'].mean(), inplace=True)
-    data['SJH'].fillna(data['SJH'].mean(), inplace=True)
-    data['SJD'].fillna(data['SJD'].mean(), inplace=True)
-    data['SJA'].fillna(data['SJA'].mean(), inplace=True)
+    # data['SJH'].fillna(data['SJH'].mean(), inplace=True)
+    # data['SJD'].fillna(data['SJD'].mean(), inplace=True)
+    # data['SJA'].fillna(data['SJA'].mean(), inplace=True)
     data['VCH'].fillna(data['VCH'].mean(), inplace=True)
     data['VCD'].fillna(data['VCD'].mean(), inplace=True)
     data['VCA'].fillna(data['VCA'].mean(), inplace=True)
-    data['GBH'].fillna(data['GBH'].mean(), inplace=True)
-    data['GBD'].fillna(data['GBD'].mean(), inplace=True)
-    data['GBA'].fillna(data['GBA'].mean(), inplace=True)
-    data['BSH'].fillna(data['BSH'].mean(), inplace=True)
-    data['BSD'].fillna(data['BSD'].mean(), inplace=True)
-    data['BSA'].fillna(data['BSA'].mean(), inplace=True)
+    # data['GBH'].fillna(data['GBH'].mean(), inplace=True)
+    # data['GBD'].fillna(data['GBD'].mean(), inplace=True)
+    # data['GBA'].fillna(data['GBA'].mean(), inplace=True)
+    # data['BSH'].fillna(data['BSH'].mean(), inplace=True)
+    # data['BSD'].fillna(data['BSD'].mean(), inplace=True)
+    # data['BSA'].fillna(data['BSA'].mean(), inplace=True)
 
     data.dropna(inplace=True)
     return data
@@ -61,7 +61,7 @@ def add_winner_label(matches):
             labels.append(0)
 
     # create new column in matches df
-    matches_data['winner_id_label'] = labels
+    matches['winner_id_label'] = labels
     return matches
 
 
@@ -134,8 +134,8 @@ matches_data_2016 = pd.read_sql("SELECT match_api_id, season, [date], home_team_
                                 "away_player_2, away_player_3, away_player_4, away_player_5, away_player_6,"
                                 "away_player_7, away_player_8, away_player_9, away_player_10, away_player_11,"
                                 "B365H, B365D, B365A, BWH, BWD, BWA, IWH, IWD, IWA,	LBH, LBD, LBA, PSH, PSD, PSA,"
-                                "WHH, WHD, WHA, SJH, SJD, SJA, VCH, VCD, VCA, GBH, GBD, GBA, BSH, BSD, BSA "
-                                "FROM Match where season like \"%2015/2016%;\"", conn)
+                                "WHH, WHD, WHA, VCH, VCD, VCA "
+                                "FROM Match where season like '%2015/2016%';", conn)
 
 matches_data_2008_2015 = pd.read_sql("SELECT match_api_id, season, [date], home_team_api_id,"
                                      "away_team_api_id, home_team_goal, away_team_goal, home_player_1, home_player_2,"
@@ -143,41 +143,60 @@ matches_data_2008_2015 = pd.read_sql("SELECT match_api_id, season, [date], home_
                                      "home_player_8, home_player_9, home_player_10, home_player_11, away_player_1,"
                                      "away_player_2, away_player_3, away_player_4, away_player_5, away_player_6,"
                                      "away_player_7, away_player_8, away_player_9, away_player_10, away_player_11,"
-                                     "B365H, B365D, B365A, BWH, BWD, BWA, IWH, IWD, IWA,	LBH, LBD, LBA, PSH, PSD, PSA,"
-                                     "WHH, WHD, WHA, SJH, SJD, SJA, VCH, VCD, VCA, GBH, GBD, GBA, BSH, BSD, BSA "
-                                     "FROM Match where season not like \"%2015/2016%;\"", conn)
+                                     "B365H, B365D, B365A, BWH, BWD, BWA, IWH, IWD, IWA, LBH, LBD, LBA, PSH, PSD, PSA,"
+                                     "WHH, WHD, WHA, VCH, VCD, VCA "
+                                     "FROM Match where season not like '%2015/2016%';", conn)
 
 # clean nans
 matches_data_2016 = clean_nan(matches_data_2016)
 matches_data_2008_2015 = clean_nan(matches_data_2008_2015)
 
-# matches_data = matches_data.tail(15)
+# matches_data_2008_2015 = matches_data_2008_2015.tail(15)
 
 # text_file = open("Output1.txt", "w")
 # text_file.write(matches_data.to_string())
 # text_file.close()
 
+print(1)
 # get overall rating instead of players ids
 matches_data_2016 = get_player_overall_rating(matches_data_2016, players_stats_data)
+print(2)
 matches_data_2008_2015 = get_player_overall_rating(matches_data_2008_2015, players_stats_data)
+print(3)
 
 # calculate and add id of winner team, if draw: id = -1
 matches_data_2016 = add_winner_label(matches_data_2016)
+print(4)
 matches_data_2008_2015 = add_winner_label(matches_data_2008_2015)
 
-print(matches_data_2008_2015.to_string())
+print(5)
+#print(matches_data_2008_2015.to_string())
 
-# X = matches_data[['home_player_1', 'home_player_2',
-#                   'home_player_3', 'home_player_4', 'home_player_5', 'home_player_6', 'home_player_7',
-#                   'home_player_8', 'home_player_9', 'home_player_10', 'home_player_11', 'away_player_1',
-#                   'away_player_2', 'away_player_3', 'away_player_4', 'away_player_5', 'away_player_6',
-#                   'away_player_7', 'away_player_8', 'away_player_9', 'away_player_10', 'away_player_11',
-#                   'B365H', 'B365D', 'B365A', 'BWH', 'BWD', 'BWA', 'IWH', 'IWD', 'IWA', 'LBH', 'LBD', 'LBA', 'PSH',
-#                   'PSD',
-#                   'PSA',
-#                   'WHH', 'WHD', 'WHA', 'SJH', 'SJD', 'SJA', 'VCH', 'VCD', 'VCA', 'GBH', 'GBD', 'GBA', 'BSH', 'BSD',
-#                   'BSA']]
-# y = matches_data['winner_id_label']
+x_train = matches_data_2008_2015[['home_player_1', 'home_player_2',
+                                  'home_player_3', 'home_player_4', 'home_player_5', 'home_player_6', 'home_player_7',
+                                  'home_player_8', 'home_player_9', 'home_player_10', 'home_player_11', 'away_player_1',
+                                  'away_player_2', 'away_player_3', 'away_player_4', 'away_player_5', 'away_player_6',
+                                  'away_player_7', 'away_player_8', 'away_player_9', 'away_player_10', 'away_player_11',
+                                  'B365H', 'B365D', 'B365A', 'BWH', 'BWD', 'BWA', 'IWH', 'IWD', 'IWA', 'LBH', 'LBD',
+                                  'LBA', 'PSH',
+                                  'PSD',
+                                  'PSA',
+                                  'WHH', 'WHD', 'WHA', 'VCH', 'VCD', 'VCA']]
+
+y_train = matches_data_2008_2015['winner_id_label']
+
+x_test = matches_data_2016[['home_player_1', 'home_player_2',
+                            'home_player_3', 'home_player_4', 'home_player_5', 'home_player_6', 'home_player_7',
+                            'home_player_8', 'home_player_9', 'home_player_10', 'home_player_11', 'away_player_1',
+                            'away_player_2', 'away_player_3', 'away_player_4', 'away_player_5', 'away_player_6',
+                            'away_player_7', 'away_player_8', 'away_player_9', 'away_player_10', 'away_player_11',
+                            'B365H', 'B365D', 'B365A', 'BWH', 'BWD', 'BWA', 'IWH', 'IWD', 'IWA', 'LBH', 'LBD', 'LBA',
+                            'PSH',
+                            'PSD',
+                            'PSA',
+                            'WHH', 'WHD', 'WHA', 'VCH', 'VCD', 'VCA']]
+
+y_test = matches_data_2016['winner_id_label']
 #
 # X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.1, random_state=42)
 
@@ -189,9 +208,9 @@ predictor_var = ['home_player_1', 'home_player_2',
                  'home_player_8', 'home_player_9', 'home_player_10', 'home_player_11', 'away_player_1',
                  'away_player_2', 'away_player_3', 'away_player_4', 'away_player_5', 'away_player_6',
                  'away_player_7', 'away_player_8', 'away_player_9', 'away_player_10', 'away_player_11',
-                 'B365H', 'B365D', 'B365A', 'BWH', 'BWD', 'BWA', 'IWH', 'IWD', 'IWA', 'LBH', 'LBD', 'LBA', 'PSH', 'PSD',
+                 'B365H', 'B365D', 'B365A', 'BWH', 'BWD', 'BWA', 'IWH', 'IWD', 'IWA', 'LBH', 'LBD', 'LBA', 'PSH',
+                 'PSD',
                  'PSA',
-                 'WHH', 'WHD', 'WHA', 'SJH', 'SJD', 'SJA', 'VCH', 'VCD', 'VCA', 'GBH', 'GBD', 'GBA', 'BSH', 'BSD',
-                 'BSA']
+                 'WHH', 'WHD', 'WHA', 'VCH', 'VCD', 'VCA']
 
 classification_model(raw_model, matches_data_2008_2015, predictor_var, outcome_var)
