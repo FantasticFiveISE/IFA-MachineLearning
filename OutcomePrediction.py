@@ -6,6 +6,44 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import KFold, train_test_split
 
 
+# clean nans
+def clean_nan(data):
+    data['B365H'].fillna(data['B365H'].mean(), inplace=True)
+    data['B365D'].fillna(data['B365D'].mean(), inplace=True)
+    data['B365A'].fillna(data['B365A'].mean(), inplace=True)
+    data['BWH'].fillna(data['BWH'].mean(), inplace=True)
+    data['BWD'].fillna(data['BWD'].mean(), inplace=True)
+    data['BWA'].fillna(data['BWA'].mean(), inplace=True)
+    data['IWH'].fillna(data['IWH'].mean(), inplace=True)
+    data['IWD'].fillna(data['IWD'].mean(), inplace=True)
+    data['IWA'].fillna(data['IWA'].mean(), inplace=True)
+    data['LBH'].fillna(data['LBH'].mean(), inplace=True)
+    data['LBD'].fillna(data['LBD'].mean(), inplace=True)
+    data['LBA'].fillna(data['LBA'].mean(), inplace=True)
+    data['PSH'].fillna(data['PSH'].mean(), inplace=True)
+    data['PSD'].fillna(data['PSD'].mean(), inplace=True)
+    data['PSA'].fillna(data['PSA'].mean(), inplace=True)
+    data['WHH'].fillna(data['WHH'].mean(), inplace=True)
+    data['WHD'].fillna(data['WHD'].mean(), inplace=True)
+    data['WHA'].fillna(data['WHA'].mean(), inplace=True)
+    data['SJH'].fillna(data['SJH'].mean(), inplace=True)
+    data['SJD'].fillna(data['SJD'].mean(), inplace=True)
+    data['SJA'].fillna(data['SJA'].mean(), inplace=True)
+    data['VCH'].fillna(data['VCH'].mean(), inplace=True)
+    data['VCD'].fillna(data['VCD'].mean(), inplace=True)
+    data['VCA'].fillna(data['VCA'].mean(), inplace=True)
+    data['GBH'].fillna(data['GBH'].mean(), inplace=True)
+    data['GBD'].fillna(data['GBD'].mean(), inplace=True)
+    data['GBA'].fillna(data['GBA'].mean(), inplace=True)
+    data['BSH'].fillna(data['BSH'].mean(), inplace=True)
+    data['BSD'].fillna(data['BSD'].mean(), inplace=True)
+    data['BSA'].fillna(data['BSA'].mean(), inplace=True)
+
+    data.dropna(inplace=True)
+    return data
+
+
+# get overall rating instead of players ids
 def add_winner_label(matches):
     # array of winner ids
     labels = []
@@ -27,6 +65,7 @@ def add_winner_label(matches):
     return matches
 
 
+# get overall rating instead of players ids
 def get_player_overall_rating(matches, player_stats):
     players = ['home_player_1', 'home_player_2', 'home_player_3', "home_player_4", "home_player_5",
                "home_player_6", "home_player_7", "home_player_8", "home_player_9", "home_player_10",
@@ -87,49 +126,31 @@ conn = sqlite3.connect(database)
 players_data = pd.read_sql("SELECT * FROM Player;", conn)
 players_stats_data = pd.read_sql("SELECT * FROM Player_Attributes;", conn)
 teams_data = pd.read_sql("SELECT * FROM Team;", conn)
-matches_data = pd.read_sql("SELECT match_api_id, season, [date], home_team_api_id,"
-                           "away_team_api_id, home_team_goal, away_team_goal, home_player_1, home_player_2,"
-                           "home_player_3, home_player_4, home_player_5, home_player_6, home_player_7,"
-                           "home_player_8, home_player_9, home_player_10, home_player_11, away_player_1,"
-                           "away_player_2, away_player_3, away_player_4, away_player_5, away_player_6,"
-                           "away_player_7, away_player_8, away_player_9, away_player_10, away_player_11,"
-                           "B365H, B365D, B365A, BWH, BWD, BWA, IWH, IWD, IWA,	LBH, LBD, LBA, PSH, PSD, PSA,"
-                           "WHH, WHD, WHA, SJH, SJD, SJA, VCH, VCD, VCA, GBH, GBD, GBA, BSH, BSD, BSA "
-                           "FROM Match;", conn)
+
+matches_data_2016 = pd.read_sql("SELECT match_api_id, season, [date], home_team_api_id,"
+                                "away_team_api_id, home_team_goal, away_team_goal, home_player_1, home_player_2,"
+                                "home_player_3, home_player_4, home_player_5, home_player_6, home_player_7,"
+                                "home_player_8, home_player_9, home_player_10, home_player_11, away_player_1,"
+                                "away_player_2, away_player_3, away_player_4, away_player_5, away_player_6,"
+                                "away_player_7, away_player_8, away_player_9, away_player_10, away_player_11,"
+                                "B365H, B365D, B365A, BWH, BWD, BWA, IWH, IWD, IWA,	LBH, LBD, LBA, PSH, PSD, PSA,"
+                                "WHH, WHD, WHA, SJH, SJD, SJA, VCH, VCD, VCA, GBH, GBD, GBA, BSH, BSD, BSA "
+                                "FROM Match where season like \"%2015/2016%;\"", conn)
+
+matches_data_2008_2015 = pd.read_sql("SELECT match_api_id, season, [date], home_team_api_id,"
+                                     "away_team_api_id, home_team_goal, away_team_goal, home_player_1, home_player_2,"
+                                     "home_player_3, home_player_4, home_player_5, home_player_6, home_player_7,"
+                                     "home_player_8, home_player_9, home_player_10, home_player_11, away_player_1,"
+                                     "away_player_2, away_player_3, away_player_4, away_player_5, away_player_6,"
+                                     "away_player_7, away_player_8, away_player_9, away_player_10, away_player_11,"
+                                     "B365H, B365D, B365A, BWH, BWD, BWA, IWH, IWD, IWA,	LBH, LBD, LBA, PSH, PSD, PSA,"
+                                     "WHH, WHD, WHA, SJH, SJD, SJA, VCH, VCD, VCA, GBH, GBD, GBA, BSH, BSD, BSA "
+                                     "FROM Match where season not like \"%2015/2016%;\"", conn)
 
 # clean nans
-matches_data['B365H'].fillna(matches_data['B365H'].mean(), inplace=True)
-matches_data['B365D'].fillna(matches_data['B365D'].mean(), inplace=True)
-matches_data['B365A'].fillna(matches_data['B365A'].mean(), inplace=True)
-matches_data['BWH'].fillna(matches_data['BWH'].mean(), inplace=True)
-matches_data['BWD'].fillna(matches_data['BWD'].mean(), inplace=True)
-matches_data['BWA'].fillna(matches_data['BWA'].mean(), inplace=True)
-matches_data['IWH'].fillna(matches_data['IWH'].mean(), inplace=True)
-matches_data['IWD'].fillna(matches_data['IWD'].mean(), inplace=True)
-matches_data['IWA'].fillna(matches_data['IWA'].mean(), inplace=True)
-matches_data['LBH'].fillna(matches_data['LBH'].mean(), inplace=True)
-matches_data['LBD'].fillna(matches_data['LBD'].mean(), inplace=True)
-matches_data['LBA'].fillna(matches_data['LBA'].mean(), inplace=True)
-matches_data['PSH'].fillna(matches_data['PSH'].mean(), inplace=True)
-matches_data['PSD'].fillna(matches_data['PSD'].mean(), inplace=True)
-matches_data['PSA'].fillna(matches_data['PSA'].mean(), inplace=True)
-matches_data['WHH'].fillna(matches_data['WHH'].mean(), inplace=True)
-matches_data['WHD'].fillna(matches_data['WHD'].mean(), inplace=True)
-matches_data['WHA'].fillna(matches_data['WHA'].mean(), inplace=True)
-matches_data['SJH'].fillna(matches_data['SJH'].mean(), inplace=True)
-matches_data['SJD'].fillna(matches_data['SJD'].mean(), inplace=True)
-matches_data['SJA'].fillna(matches_data['SJA'].mean(), inplace=True)
-matches_data['VCH'].fillna(matches_data['VCH'].mean(), inplace=True)
-matches_data['VCD'].fillna(matches_data['VCD'].mean(), inplace=True)
-matches_data['VCA'].fillna(matches_data['VCA'].mean(), inplace=True)
-matches_data['GBH'].fillna(matches_data['GBH'].mean(), inplace=True)
-matches_data['GBD'].fillna(matches_data['GBD'].mean(), inplace=True)
-matches_data['GBA'].fillna(matches_data['GBA'].mean(), inplace=True)
-matches_data['BSH'].fillna(matches_data['BSH'].mean(), inplace=True)
-matches_data['BSD'].fillna(matches_data['BSD'].mean(), inplace=True)
-matches_data['BSA'].fillna(matches_data['BSA'].mean(), inplace=True)
+matches_data_2016 = clean_nan(matches_data_2016)
+matches_data_2008_2015 = clean_nan(matches_data_2008_2015)
 
-matches_data.dropna(inplace=True)
 # matches_data = matches_data.tail(15)
 
 # text_file = open("Output1.txt", "w")
@@ -137,11 +158,14 @@ matches_data.dropna(inplace=True)
 # text_file.close()
 
 # get overall rating instead of players ids
-matches_data = get_player_overall_rating(matches_data, players_stats_data)
-# calculate and add id of winner team, if draw: id = -1
-matches_data = add_winner_label(matches_data)
+matches_data_2016 = get_player_overall_rating(matches_data_2016, players_stats_data)
+matches_data_2008_2015 = get_player_overall_rating(matches_data_2008_2015, players_stats_data)
 
-print(matches_data.to_string())
+# calculate and add id of winner team, if draw: id = -1
+matches_data_2016 = add_winner_label(matches_data_2016)
+matches_data_2008_2015 = add_winner_label(matches_data_2008_2015)
+
+print(matches_data_2008_2015.to_string())
 
 # X = matches_data[['home_player_1', 'home_player_2',
 #                   'home_player_3', 'home_player_4', 'home_player_5', 'home_player_6', 'home_player_7',
@@ -170,4 +194,4 @@ predictor_var = ['home_player_1', 'home_player_2',
                  'WHH', 'WHD', 'WHA', 'SJH', 'SJD', 'SJA', 'VCH', 'VCD', 'VCA', 'GBH', 'GBD', 'GBA', 'BSH', 'BSD',
                  'BSA']
 
-classification_model(raw_model, matches_data, predictor_var, outcome_var)
+classification_model(raw_model, matches_data_2008_2015, predictor_var, outcome_var)
