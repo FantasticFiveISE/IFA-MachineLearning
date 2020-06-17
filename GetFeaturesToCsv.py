@@ -1,5 +1,5 @@
 import sqlite3
-from datetime import time
+from time import time
 
 import pandas as pd
 

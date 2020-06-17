@@ -1,4 +1,4 @@
-from datetime import time
+from time import time
 import pandas as pd
 from sklearn import svm
 from sklearn.ensemble import RandomForestClassifier
