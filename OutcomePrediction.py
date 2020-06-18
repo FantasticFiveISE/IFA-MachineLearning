@@ -2,6 +2,10 @@ from time import time
 import pandas as pd
 from sklearn import svm
 from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import precision_score, accuracy_score, recall_score, f1_score, plot_precision_recall_curve, \
+    confusion_matrix, plot_confusion_matrix
+from sklearn.multiclass import OneVsRestClassifier
+import matplotlib.pyplot as plt
 
 start = time()
 
@@ -39,14 +43,28 @@ x_test = matches_data_2016[['home_player_1', 'home_player_2',
 y_test = matches_data_2016['winner_id_label']
 
 # svm model
-print("Starting SVM")
-clf = svm.SVC(kernel='linear', C=1).fit(x_train, y_train)
-print(clf.score(x_test, y_test))
+# print("Starting SVM")
+# clf = svm.SVC(kernel='linear', C=1).fit(x_train, y_train)
+# print(clf.score(x_test, y_test))
 
 # Random Forest model
 print("Starting Random Forest")
-clf = RandomForestClassifier(max_depth=2, random_state=0).fit(x_train, y_train)
-print(clf.score(x_test, y_test))
+clf = RandomForestClassifier(max_depth=15, random_state=0).fit(x_train, y_train)
+pred = clf.predict(x_train)
+plot_confusion_matrix(clf, x_test, y_test)
+plt.show()
+
+
+
+print("Training: " + str(clf.score(x_train, y_train)))
+print("Test: " + str(clf.score(x_test, y_test)))
+
+print("Precision score: " + str(precision_score(y_train, pred, average='macro')))
+print("Accuracy score: " + str(accuracy_score(y_train, pred)))
+print("Recall score: " + str(recall_score(y_train, pred, average='macro')))
+print("F1 score: " + str(f1_score(y_train, pred, average='macro')))
+print("Confusion matrix: " + str(confusion_matrix(y_train, pred)))
+
 
 # TODO: graphs and visualizations of the models, get the best model according to literature review. Good night!
 
