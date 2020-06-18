@@ -1,11 +1,14 @@
 from time import time
 import pandas as pd
+import seaborn as sns
 from sklearn import svm
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import precision_score, accuracy_score, recall_score, f1_score, plot_precision_recall_curve, \
-    confusion_matrix, plot_confusion_matrix
+    confusion_matrix, plot_confusion_matrix, precision_recall_curve, average_precision_score
 from sklearn.multiclass import OneVsRestClassifier
+from sklearn.metrics import plot_precision_recall_curve
 import matplotlib.pyplot as plt
+from sklearn.preprocessing import label_binarize
 
 start = time()
 
@@ -51,14 +54,26 @@ y_test = matches_data_2016['winner_id_label']
 print("Starting Random Forest")
 clf = RandomForestClassifier(max_depth=15, random_state=0).fit(x_train, y_train)
 pred = clf.predict(x_train)
+
+# draw confusion matrix
 plot_confusion_matrix(clf, x_test, y_test)
 plt.show()
 
+# get importance of each feature
+feature_imp = pd.Series(clf.feature_importances_, index=x_train.columns).sort_values(ascending=False)
+print(feature_imp)
+# Creating a bar plot
+sns.barplot(x=feature_imp, y=feature_imp.index)
+# Add labels to your graph
+plt.xlabel('Feature Importance Score')
+plt.ylabel('Features')
+plt.title("Visualizing Important Features")
+plt.legend()
+plt.show()
 
-
+# print scores
 print("Training: " + str(clf.score(x_train, y_train)))
 print("Test: " + str(clf.score(x_test, y_test)))
-
 print("Precision score: " + str(precision_score(y_train, pred, average='macro')))
 print("Accuracy score: " + str(accuracy_score(y_train, pred)))
 print("Recall score: " + str(recall_score(y_train, pred, average='macro')))
@@ -66,7 +81,5 @@ print("F1 score: " + str(f1_score(y_train, pred, average='macro')))
 print("Confusion matrix: " + str(confusion_matrix(y_train, pred)))
 
 
-# TODO: graphs and visualizations of the models, get the best model according to literature review. Good night!
-
 end = time()
-print("Program run in {:.1f} minutes".format((end - start)/60))
+print("Program run in {:.1f} minutes".format((end - start) / 60))
