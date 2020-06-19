@@ -109,13 +109,16 @@ predictor_var = ['home_player_1', 'home_player_2',
 # classifier = GradientBoostingClassifier(random_state=0)
 classifier = RandomForestClassifier(max_depth=10, random_state=0)
 
-
+# get cross-validation score of a model
 classification_model(classifier, matches_data_2008_2015, predictor_var, outcome_var)
 
+# fit data to classifier
 classifier.fit(x_tr, y_tr)
 
+# get prediction
 prediction = classifier.predict(x_tr)
 
+# get results about
 get_results(classifier, x_tr, y_tr, x_te, y_te, prediction)
 
 end = time()
