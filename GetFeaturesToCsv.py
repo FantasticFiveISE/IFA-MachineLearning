@@ -99,7 +99,6 @@ conn = sqlite3.connect(database)
 # get initial features to df
 players_data = pd.read_sql("SELECT * FROM Player;", conn)
 players_stats_data = pd.read_sql("SELECT * FROM Player_Attributes;", conn)
-teams_data = pd.read_sql("SELECT * FROM Team;", conn)
 
 matches_data_2016 = pd.read_sql("SELECT match_api_id, season, [date], home_team_api_id,"
                                 "away_team_api_id, home_team_goal, away_team_goal, home_player_1, home_player_2,"

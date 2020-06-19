@@ -10,6 +10,7 @@ from sklearn.metrics import precision_score, accuracy_score, recall_score, f1_sc
     plot_confusion_matrix
 from sklearn.model_selection import KFold
 from sklearn.naive_bayes import GaussianNB
+from sklearn.neural_network import MLPClassifier
 
 
 def classification_model(model_model, data, predictors, outcome):
@@ -37,7 +38,7 @@ def get_results(clf, x_train, y_train, x_test, y_test, pred):
     plot_confusion_matrix(clf, x_test, y_test)
     plt.show()
 
-    # get importance of each feature
+    # # get importance of each feature
     # feature_imp = pd.Series(clf.feature_importances_, index=x_train.columns).sort_values(ascending=False)
     # # print(feature_imp)
     # # Creating a bar plot
@@ -107,6 +108,7 @@ predictor_var = ['home_player_1', 'home_player_2',
 # classifier = GaussianNB()
 # classifier = svm.SVC()
 # classifier = GradientBoostingClassifier(random_state=0)
+# classifier = MLPClassifier(random_state=0, max_iter=300)
 classifier = RandomForestClassifier(max_depth=10, random_state=0)
 
 # get cross-validation score of a model
